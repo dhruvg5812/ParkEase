@@ -1,0 +1,509 @@
+/* ==========================================================================
+   ParkEase - Design System & Modern UI Stylesheet
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #2563EB;
+    --primary-hover: #1D4ED8;
+    --primary-soft: rgba(37, 99, 235, 0.08);
+    --secondary: #0D9488;
+    --secondary-hover: #0F766E;
+    --secondary-soft: rgba(13, 148, 136, 0.08);
+    --dark: #0F172A;
+    --dark-surface: #1E293B;
+    --light-bg: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --border-color: #E2E8F0;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --status-available: #10B981;
+    --status-reserved: #F59E0B;
+    --status-maintenance: #EF4444;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand, .font-heading {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   Navbar & Header
+   -------------------------------------------------------------------------- */
+.navbar-custom {
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.85rem 0;
+    transition: all 0.2s ease;
+}
+
+.navbar-brand {
+    font-size: 1.45rem;
+    color: var(--dark) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.nav-link {
+    font-weight: 500;
+    color: var(--text-muted) !important;
+    padding: 0.5rem 0.9rem !important;
+    border-radius: var(--radius-sm);
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary) !important;
+    background-color: var(--primary-soft);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), #1d4ed8);
+    border: none;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    padding: 0.55rem 1.25rem;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.btn-teal {
+    background: linear-gradient(135deg, var(--secondary), #0f766e);
+    color: white;
+    border: none;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-teal:hover {
+    color: white;
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Hero Section
+   -------------------------------------------------------------------------- */
+.hero-wrapper {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F3763 100%);
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 3.5rem 2.5rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+}
+
+.hero-wrapper::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(13, 148, 136, 0.25) 0%, rgba(37, 99, 235, 0.1) 60%, transparent 100%);
+    pointer-events: none;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #93c5fd;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.hero-search-card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    color: var(--text-main);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* --------------------------------------------------------------------------
+   Stats Cards & Widgets
+   -------------------------------------------------------------------------- */
+.stat-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 1.35rem 1.25rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+}
+
+.stat-icon.primary { background: var(--primary-soft); color: var(--primary); }
+.stat-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--status-available); }
+.stat-icon.warning { background: rgba(245, 158, 11, 0.1); color: var(--status-reserved); }
+.stat-icon.danger { background: rgba(239, 68, 68, 0.1); color: var(--status-maintenance); }
+.stat-icon.teal { background: var(--secondary-soft); color: var(--secondary); }
+
+.stat-value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.1;
+    font-family: 'Outfit', sans-serif;
+    color: var(--dark);
+}
+
+.stat-label {
+    font-size: 0.825rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Parking Slot Cards
+   -------------------------------------------------------------------------- */
+.slot-card {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    padding: 1.35rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.slot-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: #cbd5e1;
+}
+
+.slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.85rem;
+}
+
+.slot-code {
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-badge.available {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #065f46;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.reserved, .status-badge.pending {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #92400e;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.unavailable, .status-badge.maintenance, .status-badge.cancelled {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #991b1b;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.status-badge.completed, .status-badge.checkedin {
+    background-color: rgba(37, 99, 235, 0.12);
+    color: #1e40af;
+    border: 1px solid rgba(37, 99, 235, 0.3);
+}
+
+.rate-tag {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    font-family: 'Outfit', sans-serif;
+}
+
+.rate-tag small {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Digital Parking Receipt / Permit Card
+   -------------------------------------------------------------------------- */
+.permit-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.permit-header {
+    background: linear-gradient(135deg, var(--dark), #1e293b);
+    color: white;
+    padding: 2rem 2.5rem;
+    position: relative;
+}
+
+.permit-seal {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #6ee7b7;
+}
+
+.permit-body {
+    padding: 2rem 2.5rem;
+}
+
+.permit-divider {
+    border: none;
+    border-top: 2px dashed #cbd5e1;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.permit-divider::before, .permit-divider::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--light-bg);
+}
+
+.permit-divider::before { left: -36px; }
+.permit-divider::after { right: -36px; }
+
+/* --------------------------------------------------------------------------
+   Feature Cards & Steps
+   -------------------------------------------------------------------------- */
+.feature-box {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.feature-box:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: #cbd5e1;
+}
+
+.step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.15rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border: 2px solid var(--primary);
+}
+
+/* --------------------------------------------------------------------------
+   Tables & Forms
+   -------------------------------------------------------------------------- */
+.table-custom {
+    background: white;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.table-custom th {
+    background-color: #f1f5f9;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table-custom td {
+    padding: 1rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-custom tr:last-child td {
+    border-bottom: none;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.card-custom {
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.card-custom-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-custom-body {
+    padding: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+.footer-custom {
+    background: #0f172a;
+    color: #94a3b8;
+    margin-top: auto;
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+    font-size: 0.9rem;
+}
+
+.footer-custom a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-custom a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 1.5rem;
+    margin-top: 2.5rem;
+    font-size: 0.85rem;
+}

@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "About ParkEase";
+}
+
+<div class="container py-4">
+    <!-- Header banner -->
+    <div class="text-center max-w-700 mx-auto mb-5">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-2">Smart Urban Mobility</span>
+        <h1 class="display-5 fw-bold font-heading mb-3">About ParkEase System</h1>
+        <p class="lead text-muted">
+            A comprehensive, next-generation parking reservation web platform designed to eliminate parking congestion, provide upfront pricing, and streamline vehicle check-ins.
+        </p>
+    </div>
+
+    <!-- Overview & Mission -->
+    <div class="row g-4 align-items-center mb-5">
+        <div class="col-lg-6">
+            <h3 class="fw-bold font-heading mb-3">The Problem We Solve</h3>
+            <p class="text-secondary leading-relaxed">
+                Finding available parking in bustling city centers, corporate IT parks, shopping malls, and airports consumes valuable time, wastes fuel, and causes avoidable driver stress.
+            </p>
+            <p class="text-secondary leading-relaxed">
+                <strong>ParkEase</strong> provides a centralized reservation ecosystem where drivers can search available spaces in real-time, view transparent hourly rates, enter vehicle details, and secure guaranteed parking bays before departure.
+            </p>
+            <div class="row g-3 mt-2">
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <i class="bi bi-clock-history text-primary fs-3 mb-2 d-block"></i>
+                        <h6 class="fw-bold font-heading mb-1">Zero Wait Times</h6>
+                        <p class="text-muted small mb-0">Slots are guaranteed upon booking confirmation.</p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <i class="bi bi-shield-lock text-success fs-3 mb-2 d-block"></i>
+                        <h6 class="fw-bold font-heading mb-1">Concurrency Safe</h6>
+                        <p class="text-muted small mb-0">Strict database transactions prevent double bookings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="p-4 p-md-5 rounded-4 bg-dark text-white shadow-lg">
+                <h4 class="fw-bold font-heading mb-3 text-light">Key Architectural Pillars</h4>
+                <ul class="list-unstyled d-flex flex-column gap-3 mb-0">
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-primary p-2 text-white">
+                            <i class="bi bi-layers"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">ASP.NET Core MVC &amp; C#</h6>
+                            <p class="text-secondary small mb-0">Robust separation of concerns adhering to the Model-View-Controller design pattern.</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-success p-2 text-white">
+                            <i class="bi bi-database"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Entity Framework Core &amp; MySQL</h6>
+                            <p class="text-secondary small mb-0">Code-first relational schema with ACID-compliant transactions and foreign key constraints.</p>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-info p-2 text-white">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Role-Based Security &amp; Identity</h6>
+                            <p class="text-secondary small mb-0">Secure PBKDF2 password hashing with separate Customer and Administrator privileges.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Specifications Card -->
+    <div class="card-custom p-4 p-md-5 mb-5">
+        <h3 class="fw-bold font-heading mb-4 text-center">Project Architecture &amp; Technology Stack</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 25%;">Layer / Component</th>
+                        <th style="width: 35%;">Technology Used</th>
+                        <th style="width: 40%;">Role in ParkEase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold text-primary">Web Framework</td>
+                        <td>ASP.NET Core MVC (C#)</td>
+                        <td>Controller request handling, business services, and view rendering</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Database &amp; ORM</td>
+                        <td>MySQL &amp; Pomelo Entity Framework Core</td>
+                        <td>Relational data persistence, schema migrations, concurrency checks</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">Authentication</td>
+                        <td>ASP.NET Core Identity</td>
+                        <td>User management, cookie auth, secure password hashing, roles</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">User Interface</td>
+                        <td>HTML5, CSS3, Bootstrap 5, Bootstrap Icons</td>
+                        <td>Responsive layout, interactive components, accessibility</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-primary">State Management</td>
+                        <td>Session, TempData, Auth Cookies</td>
+                        <td>Flash alerts, multi-step search filters, secure login sessions</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

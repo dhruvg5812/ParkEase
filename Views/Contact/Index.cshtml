@@ -1,0 +1,143 @@
+@model ParkEase.ViewModels.ContactViewModel
+@{
+    ViewData["Title"] = "Contact & Support";
+}
+
+<div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+        <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-2">24/7 Motorist Support</span>
+        <h1 class="display-5 fw-bold font-heading mb-2">Get in Touch with ParkEase</h1>
+        <p class="text-muted">Have a query regarding parking hubs, billing, or corporate passes? Send us a message and our support desk will assist you.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Contact Form -->
+        <div class="col-lg-7">
+            <div class="card-custom p-4 p-md-5">
+                <h4 class="fw-bold font-heading mb-4 pb-2 border-bottom">
+                    <i class="bi bi-chat-left-dots text-primary me-2"></i>Send Support Inquiry
+                </h4>
+
+                <form asp-controller="Contact" asp-action="Index" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label small fw-semibold text-muted"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Your Full Name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label small fw-semibold text-muted"></label>
+                            <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Subject" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="Subject" class="form-control" placeholder="e.g. Monthly Pass Request or EV Charging Query" />
+                        <span asp-validation-for="Subject" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Message" class="form-label small fw-semibold text-muted"></label>
+                        <textarea asp-for="Message" rows="5" class="form-control" placeholder="Describe your question or issue in detail..."></textarea>
+                        <span asp-validation-for="Message" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4 py-2 fs-6 shadow-sm">
+                        <i class="bi bi-send-fill me-2"></i> Submit Inquiry
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Support Info & FAQs -->
+        <div class="col-lg-5">
+            <div class="card-custom p-4 mb-4">
+                <h5 class="fw-bold font-heading mb-3">Direct Assistance Channels</h5>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-primary-soft text-primary p-2 fs-5">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold">Toll-Free Control Room</div>
+                            <div class="text-muted small">+91 1800-PARKEASE (Mon - Sun, 24/7)</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-success-soft text-success p-2 fs-5">
+                            <i class="bi bi-envelope-at-fill"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold">Email Helpdesk</div>
+                            <div class="text-muted small">support@parkease.local</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-warning-soft text-warning p-2 fs-5">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold">Operations Headquarters</div>
+                            <div class="text-muted small">100 MG Road, Central Business District, Metro City</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-custom p-4">
+                <h5 class="fw-bold font-heading mb-3">Frequently Asked Questions</h5>
+                <div class="accordion accordion-flush" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq1">
+                            <button class="accordion-button collapsed px-0 fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false">
+                                How does check-in work at the barrier?
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body px-0 text-muted small">
+                                When arriving at the hub, state your unique booking reference (e.g. PK-20261021-XXXX) to the gate supervisor or scan your digital permit at the entrance.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq2">
+                            <button class="accordion-button collapsed px-0 fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false">
+                                What if I stay longer than reserved?
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body px-0 text-muted small">
+                                The system records actual departure time during check-out and computes additional billable hours at the slot's hourly rate locked at booking time.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="faq3">
+                            <button class="accordion-button collapsed px-0 fw-semibold small" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false">
+                                Can I cancel my reservation?
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body px-0 text-muted small">
+                                Yes! You can cancel any confirmed booking from "My Bookings" before the reservation end time, provided the vehicle hasn't already checked in.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

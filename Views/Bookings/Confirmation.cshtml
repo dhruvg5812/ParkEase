@@ -1,0 +1,106 @@
+@model ParkEase.ViewModels.BookingDetailsViewModel
+@{
+    ViewData["Title"] = "Booking Confirmed";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <!-- Digital Parking Pass / Permit Card -->
+            <div class="permit-card mb-4" id="parkingPass">
+                <div class="permit-header">
+                    <div class="permit-seal">
+                        <i class="bi bi-shield-check fs-4"></i>
+                        <span>Verified</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="brand-icon-box" style="width: 28px; height: 28px; font-size: 0.9rem;">
+                            <i class="bi bi-p-square-fill"></i>
+                        </span>
+                        <span class="fw-bold tracking-wider text-uppercase small text-light opacity-75">ParkEase Digital Permit</span>
+                    </div>
+                    <h2 class="display-6 fw-bold mb-1 text-white font-heading">Reservation Confirmed</h2>
+                    <p class="text-light opacity-75 small mb-0">Show this digital permit or booking reference at the entrance gate.</p>
+                </div>
+
+                <div class="permit-body">
+                    <!-- Top Reference Header -->
+                    <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-4">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold">Booking Reference</span>
+                            <div class="fs-4 fw-bold text-primary font-heading">@Model.BookingReference</div>
+                        </div>
+                        <span class="status-badge available px-3 py-2 fs-6">
+                            <i class="bi bi-check2-circle me-1"></i> @Model.BookingStatus
+                        </span>
+                    </div>
+
+                    <!-- Slot and Location Details -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <span class="text-muted small text-uppercase">Assigned Stall</span>
+                            <div class="fs-2 fw-bold text-dark font-heading">
+                                Slot @Model.SlotNumber
+                                <span class="badge bg-secondary fs-6 align-middle ms-1">@Model.VehicleType</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted small text-uppercase">Vehicle Number</span>
+                            <div class="fs-4 fw-bold text-dark font-heading">@Model.VehicleNumber</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="text-muted small text-uppercase">Parking Facility</span>
+                        <h5 class="fw-bold text-dark mb-0 font-heading">@Model.LocationName</h5>
+                        <p class="text-muted small mb-0">@Model.LocationAddress</p>
+                    </div>
+
+                    <!-- Dashed Perforation Line -->
+                    <hr class="permit-divider" />
+
+                    <!-- Timing and Pricing -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <span class="text-muted small text-uppercase">Reserved Start</span>
+                            <div class="fw-bold text-dark">@Model.StartDateTime.ToString("dd MMM yyyy, hh:mm tt")</div>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted small text-uppercase">Reserved End</span>
+                            <div class="fw-bold text-dark">@Model.EndDateTime.ToString("dd MMM yyyy, hh:mm tt")</div>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted small text-uppercase">Rate Locked</span>
+                            <div class="fw-semibold text-secondary">₹@Model.HourlyRateAtBooking.ToString("N2")/hr</div>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted small text-uppercase">Estimated Total Charge</span>
+                            <div class="fs-4 fw-bold text-primary font-heading">₹@Model.EstimatedFee.ToString("N2")</div>
+                        </div>
+                    </div>
+
+                    <!-- Barcode / QR Simulation Footer -->
+                    <div class="p-3 bg-light rounded-3 text-center border">
+                        <div class="font-monospace text-muted small mb-1 tracking-widest">
+                            * |||||||||||||||||||||||||||||||||||||||||| *
+                        </div>
+                        <small class="text-muted">Present Reference <strong>@Model.BookingReference</strong> at barrier intercom</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <button type="button" onclick="printParkingPermit()" class="btn btn-outline-primary px-4">
+                    <i class="bi bi-printer me-2"></i> Print Permit
+                </button>
+                <a asp-controller="Bookings" asp-action="MyBookings" class="btn btn-primary px-4 shadow-sm">
+                    <i class="bi bi-ticket-perforated me-2"></i> View in My Bookings
+                </a>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary px-4">
+                    Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

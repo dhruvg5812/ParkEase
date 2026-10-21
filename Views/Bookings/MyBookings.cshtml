@@ -1,0 +1,189 @@
+@model ParkEase.ViewModels.MyBookingsViewModel
+@{
+    ViewData["Title"] = "My Parking Bookings";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-1">Customer Portal</span>
+            <h1 class="h2 fw-bold font-heading mb-0">My Parking Reservations</h1>
+            <p class="text-muted small mb-0">Track active parking permits, review booking history, and manage cancellations.</p>
+        </div>
+        <a asp-controller="Parking" asp-action="Index" class="btn btn-primary px-4 shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Reserve New Slot
+        </a>
+    </div>
+
+    <!-- Status Tabs -->
+    <ul class="nav nav-pills mb-4 bg-white p-2 rounded-3 border">
+        <li class="nav-item">
+            <a class="nav-link @(string.IsNullOrEmpty(Model.FilterStatus) ? "active" : "")" asp-action="MyBookings">
+                All (@Model.TotalBookings)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.FilterStatus == "Confirmed" ? "active" : "")" asp-action="MyBookings" asp-route-status="Confirmed">
+                Confirmed / Active (@Model.ActiveBookings)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.FilterStatus == "Completed" ? "active" : "")" asp-action="MyBookings" asp-route-status="Completed">
+                Completed (@Model.CompletedBookings)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(Model.FilterStatus == "Cancelled" ? "active" : "")" asp-action="MyBookings" asp-route-status="Cancelled">
+                Cancelled (@Model.CancelledBookings)
+            </a>
+        </li>
+    </ul>
+
+    <!-- Bookings Table / Cards -->
+    @if (!Model.Bookings.Any())
+    {
+        <div class="card-custom p-5 text-center my-4">
+            <i class="bi bi-ticket-perforated text-muted display-4 mb-3 d-block"></i>
+            <h4 class="fw-bold font-heading mb-1">No Reservations Found</h4>
+            <p class="text-muted mb-3">You don't have any bookings matching this filter status.</p>
+            <a asp-controller="Parking" asp-action="Index" class="btn btn-primary px-4 mx-auto">
+                Find &amp; Book Parking
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive table-custom mb-4">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Booking Ref</th>
+                        <th>Slot &amp; Hub</th>
+                        <th>Vehicle</th>
+                        <th>Reservation Schedule</th>
+                        <th>Estimated Fee</th>
+                        <th>Status</th>
+                        <th>Check-In</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in Model.Bookings)
+                    {
+                        var canCancel = b.BookingStatus == "Confirmed" && b.Session == null && b.EndDateTime > DateTime.Now;
+                        <tr>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@b.Id" class="fw-bold text-primary font-monospace text-decoration-none">
+                                    @b.BookingReference
+                                </a>
+                                <div class="text-muted small">@b.CreatedAt.ToString("dd MMM yyyy")</div>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">Slot @b.ParkingSlot?.SlotNumber</div>
+                                <div class="text-muted small text-truncate" style="max-width: 180px;">
+                                    @b.ParkingSlot?.ParkingLocation?.Name
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">
+                                    @b.VehicleType
+                                </span>
+                                <div class="font-monospace small fw-semibold">@b.VehicleNumber</div>
+                            </td>
+                            <td>
+                                <div class="small fw-semibold">@b.StartDateTime.ToString("dd MMM, hh:mm tt")</div>
+                                <div class="text-muted small">to @b.EndDateTime.ToString("dd MMM, hh:mm tt")</div>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-dark">
+                                    ₹@((b.Session?.FinalFee ?? b.EstimatedFee).ToString("N2"))
+                                </span>
+                            </td>
+                            <td>
+                                @if (b.BookingStatus == "Confirmed")
+                                {
+                                    <span class="status-badge available"><i class="bi bi-check-circle"></i> Confirmed</span>
+                                }
+                                else if (b.BookingStatus == "Completed")
+                                {
+                                    <span class="status-badge completed"><i class="bi bi-flag-fill"></i> Completed</span>
+                                }
+                                else if (b.BookingStatus == "Cancelled")
+                                {
+                                    <span class="status-badge cancelled"><i class="bi bi-x-circle"></i> Cancelled</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge pending">@b.BookingStatus</span>
+                                }
+                            </td>
+                            <td>
+                                @if (b.Session != null)
+                                {
+                                    if (b.Session.Status == "CheckedIn")
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                            <i class="bi bi-box-arrow-in-right"></i> On Site
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary border">
+                                            <i class="bi bi-box-arrow-right"></i> Checked Out
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">&mdash;</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-1">
+                                    <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-outline-secondary btn-sm" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    @if (canCancel)
+                                    {
+                                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal_@b.Id" title="Cancel Booking">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+
+                                        <!-- Cancel Confirmation Modal -->
+                                        <div class="modal fade" id="cancelModal_@b.Id" tabindex="-1" aria-labelledby="cancelModalLabel_@b.Id" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered text-start">
+                                                <div class="modal-content border-0 shadow">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title font-heading" id="cancelModalLabel_@b.Id">Cancel Reservation?</h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body p-4">
+                                                        <p>Are you sure you want to cancel your parking booking <strong>@b.BookingReference</strong>?</p>
+                                                        <div class="p-3 bg-light rounded-3 small mb-3 border">
+                                                            <div><strong>Slot:</strong> @b.ParkingSlot?.SlotNumber (@b.ParkingSlot?.ParkingLocation?.Name)</div>
+                                                            <div><strong>Start Time:</strong> @b.StartDateTime.ToString("dd MMM yyyy, hh:mm tt")</div>
+                                                            <div><strong>Refund / Release:</strong> The slot will immediately become available for other motorists.</div>
+                                                        </div>
+                                                        <p class="small text-muted mb-0">This action cannot be undone.</p>
+                                                    </div>
+                                                    <div class="modal-footer bg-light">
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Keep Booking</button>
+                                                        <form asp-action="Cancel" asp-route-id="@b.Id" method="post" class="d-inline">
+                                                            @Html.AntiForgeryToken()
+                                                            <button type="submit" class="btn btn-danger btn-sm">Yes, Cancel Reservation</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

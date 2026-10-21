@@ -1,0 +1,162 @@
+@model IEnumerable<ParkEase.Models.ParkingSlot>
+@{
+    ViewData["Title"] = "Manage Parking Slots";
+    var locations = ViewBag.Locations as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Index">Admin</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Parking Slots</li>
+                </ol>
+            </nav>
+            <h1 class="h2 fw-bold font-heading mb-0">Parking Slot Management</h1>
+            <p class="text-muted small mb-0">Configure bay numbers, hourly rates, vehicle classes, and maintenance states.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Add Parking Slot
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card-custom p-3 mb-4">
+        <form asp-action="Index" method="get">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-semibold text-muted">Filter by Facility</label>
+                    <select name="locationId" class="form-select form-select-sm bg-light">
+                        <option value="">All Locations</option>
+                        @foreach (var loc in locations)
+                        {
+                            <option value="@loc.Value" selected="@(loc.Selected ? "selected" : null)">@loc.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Vehicle Type</label>
+                    <select name="vehicleType" class="form-select form-select-sm bg-light">
+                        <option value="">All Vehicle Types</option>
+                        <option value="Car" selected="@(ViewBag.SelectedVehicleType == "Car" ? "selected" : null)">Car</option>
+                        <option value="Bike" selected="@(ViewBag.SelectedVehicleType == "Bike" ? "selected" : null)">Bike</option>
+                        <option value="SUV" selected="@(ViewBag.SelectedVehicleType == "SUV" ? "selected" : null)">SUV</option>
+                        <option value="EV" selected="@(ViewBag.SelectedVehicleType == "EV" ? "selected" : null)">EV</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Status</label>
+                    <select name="status" class="form-select form-select-sm bg-light">
+                        <option value="">All Statuses</option>
+                        <option value="Available" selected="@(ViewBag.SelectedStatus == "Available" ? "selected" : null)">Available</option>
+                        <option value="Unavailable" selected="@(ViewBag.SelectedStatus == "Unavailable" ? "selected" : null)">Unavailable</option>
+                        <option value="Maintenance" selected="@(ViewBag.SelectedStatus == "Maintenance" ? "selected" : null)">Maintenance</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                        <i class="bi bi-funnel me-1"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Slots Table -->
+    <div class="card-custom">
+        <div class="card-custom-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Slot Number</th>
+                            <th>Facility Location</th>
+                            <th>Vehicle Class</th>
+                            <th>Hourly Rate</th>
+                            <th>Current State</th>
+                            <th>Quick Status Toggle</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="badge bg-dark fs-6 px-2 py-1 font-monospace">@s.SlotNumber</span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">@s.ParkingLocation?.Name</div>
+                                    <div class="text-muted small text-truncate" style="max-width: 180px;">@s.Description</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        @if (s.VehicleType == "Car") { <i class="bi bi-car-front text-primary me-1"></i> }
+                                        else if (s.VehicleType == "Bike") { <i class="bi bi-bicycle text-success me-1"></i> }
+                                        else if (s.VehicleType == "SUV") { <i class="bi bi-truck-front text-warning me-1"></i> }
+                                        else if (s.VehicleType == "EV") { <i class="bi bi-lightning-charge text-info me-1"></i> }
+                                        @s.VehicleType
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-primary">₹@s.HourlyRate.ToString("N2")</span><small class="text-muted">/hr</small>
+                                </td>
+                                <td>
+                                    @if (s.Status == "Available")
+                                    {
+                                        <span class="status-badge available"><i class="bi bi-check2"></i> Available</span>
+                                    }
+                                    else if (s.Status == "Maintenance")
+                                    {
+                                        <span class="status-badge maintenance"><i class="bi bi-tools"></i> Maintenance</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge unavailable"><i class="bi bi-x-circle"></i> @s.Status</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <form asp-action="ToggleStatus" asp-route-id="@s.Id" asp-route-newStatus="Available" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-success @(s.Status == "Available" ? "active" : "")" title="Mark Available">
+                                                Active
+                                            </button>
+                                        </form>
+                                        <form asp-action="ToggleStatus" asp-route-id="@s.Id" asp-route-newStatus="Maintenance" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-danger @(s.Status == "Maintenance" ? "active" : "")" title="Mark Maintenance">
+                                                Maint.
+                                            </button>
+                                        </form>
+                                        <form asp-action="ToggleStatus" asp-route-id="@s.Id" asp-route-newStatus="Unavailable" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-secondary @(s.Status == "Unavailable" ? "active" : "")" title="Mark Closed">
+                                                Close
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-1">
+                                        <a asp-action="Edit" asp-route-id="@s.Id" class="btn btn-outline-secondary btn-sm" title="Edit Slot Details">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@s.Id" method="post" class="d-inline" onsubmit="return confirm('Delete slot @s.SlotNumber?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete Slot">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

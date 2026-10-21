@@ -1,0 +1,316 @@
+@model ParkEase.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "System Administration Dashboard";
+}
+
+<div class="container-fluid px-lg-4 py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <span class="badge bg-danger-subtle text-danger px-3 py-1 rounded-pill fw-semibold mb-1">
+                <i class="bi bi-shield-lock-fill me-1"></i> Admin Console
+            </span>
+            <h1 class="h2 fw-bold font-heading mb-0">Smart Parking Administration</h1>
+            <p class="text-muted small mb-0">Real-time facility monitoring, slot allocation, barrier check-ins, and financial tracking.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="AdminSlots" asp-action="Create" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle me-1"></i> Add Slot
+            </a>
+            <a asp-controller="AdminLocations" asp-action="Create" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-geo-alt me-1"></i> Add Location
+            </a>
+        </div>
+    </div>
+
+    <!-- 8 Main Key Performance Indicators (KPI Cards) -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@Model.TotalParkingSlots</div>
+                        <div class="stat-label">Total Parking Slots</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon success">
+                        <i class="bi bi-check2-all"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value text-success">@Model.AvailableSlots</div>
+                        <div class="stat-label">Currently Available</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon warning">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value text-warning">@Model.ActiveCheckIns</div>
+                        <div class="stat-label">Active Check-Ins</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon danger">
+                        <i class="bi bi-wrench-adjustable"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value text-danger">@Model.MaintenanceSlots</div>
+                        <div class="stat-label">Under Maintenance</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon teal">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@Model.TodayReservations</div>
+                        <div class="stat-label">Today's Bookings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@Model.UpcomingReservations</div>
+                        <div class="stat-label">Upcoming Confirmed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon success">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@Model.CompletedBookings</div>
+                        <div class="stat-label">Completed Sessions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon warning">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value text-primary">₹@Model.TotalRecordedRevenue.ToString("N0")</div>
+                        <div class="stat-label">Recorded Revenue</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Transparency Note -->
+    <div class="p-3 bg-light rounded-3 border d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 small">
+        <div>
+            <i class="bi bi-info-circle text-primary me-1"></i>
+            <strong>Financial Distinction:</strong> Final recorded revenue (<strong>₹@Model.TotalRecordedRevenue.ToString("N2")</strong>) is calculated from closed check-out sessions.
+            Active upcoming estimated value equals <strong>₹@Model.EstimatedActiveRevenue.ToString("N2")</strong>.
+        </div>
+        <a asp-controller="AdminBookings" asp-action="Index" class="btn btn-outline-primary btn-sm">
+            View All Reservations
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Recent Bookings Table -->
+        <div class="col-xl-8">
+            <div class="card-custom">
+                <div class="card-custom-header">
+                    <h5 class="fw-bold font-heading mb-0">
+                        <i class="bi bi-table text-primary me-2"></i>Recent Customer Reservations
+                    </h5>
+                    <a asp-controller="AdminBookings" asp-action="Index" class="btn btn-outline-primary btn-sm">
+                        View All Bookings <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-custom-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ref / Time</th>
+                                    <th>Customer / Plate</th>
+                                    <th>Slot / Hub</th>
+                                    <th>Status</th>
+                                    <th>Barrier Session</th>
+                                    <th class="text-end">Manage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model.RecentBookings)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="AdminBookings" asp-action="Details" asp-route-id="@b.Id" class="fw-bold text-primary text-decoration-none">
+                                                @b.BookingReference
+                                            </a>
+                                            <div class="text-muted small">@b.StartDateTime.ToString("dd MMM, hh:mm tt")</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">@(b.User?.FullName ?? "Customer")</div>
+                                            <span class="badge bg-light text-dark border">@b.VehicleNumber</span>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold">Slot @b.ParkingSlot?.SlotNumber</div>
+                                            <div class="text-muted small text-truncate" style="max-width: 150px;">
+                                                @b.ParkingSlot?.ParkingLocation?.Name
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (b.BookingStatus == "Confirmed")
+                                            {
+                                                <span class="status-badge available">Confirmed</span>
+                                            }
+                                            else if (b.BookingStatus == "Completed")
+                                            {
+                                                <span class="status-badge completed">Completed</span>
+                                            }
+                                            else if (b.BookingStatus == "Cancelled")
+                                            {
+                                                <span class="status-badge cancelled">Cancelled</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="status-badge pending">@b.BookingStatus</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (b.Session != null)
+                                            {
+                                                if (b.Session.Status == "CheckedIn")
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-car-front-fill me-1"></i> On Site
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-check2"></i> Departed
+                                                    </span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">Pending Arrival</span>
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <a asp-controller="AdminBookings" asp-action="Details" asp-route-id="@b.Id" class="btn btn-outline-secondary btn-sm" title="View details & record check-in/out">
+                                                <i class="bi bi-pencil-square"></i> Action
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Facility Breakdown Side Panel -->
+        <div class="col-xl-4">
+            <div class="card-custom mb-4">
+                <div class="card-custom-header">
+                    <h5 class="fw-bold font-heading mb-0">
+                        <i class="bi bi-pie-chart text-teal me-2"></i>Hub Occupancy Summary
+                    </h5>
+                </div>
+                <div class="card-custom-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var stat in Model.LocationStats)
+                        {
+                            <li class="list-group-item p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold mb-0">@stat.LocationName</h6>
+                                    <span class="badge bg-primary-subtle text-primary">@stat.AvailableSlots / @stat.TotalSlots Free</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    @{
+                                        int occRate = stat.TotalSlots > 0 ? (int)(((stat.TotalSlots - stat.AvailableSlots) / (double)stat.TotalSlots) * 100) : 0;
+                                    }
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @occRate%" aria-valuenow="@occRate" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small mt-1">
+                                    <span>Active Bookings: @stat.ActiveBookings</span>
+                                    <span>Revenue: ₹@stat.Revenue.ToString("N0")</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Recent Inquiries -->
+            <div class="card-custom">
+                <div class="card-custom-header">
+                    <h6 class="fw-bold font-heading mb-0">
+                        <i class="bi bi-chat-quote text-warning me-2"></i>Recent Motorist Inquiries
+                    </h6>
+                </div>
+                <div class="card-custom-body p-3">
+                    @if (!Model.RecentMessages.Any())
+                    {
+                        <p class="text-muted small mb-0">No contact messages received.</p>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-column gap-2">
+                            @foreach (var m in Model.RecentMessages)
+                            {
+                                <div class="p-2 rounded bg-light border small">
+                                    <div class="d-flex justify-content-between fw-bold text-dark">
+                                        <span>@m.Name</span>
+                                        <span class="text-muted fw-normal" style="font-size: 0.75rem;">@m.SubmittedAt.ToString("dd MMM")</span>
+                                    </div>
+                                    <div class="text-primary text-truncate fw-semibold">@m.Subject</div>
+                                    <div class="text-secondary text-truncate" style="font-size: 0.8rem;">@m.Message</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

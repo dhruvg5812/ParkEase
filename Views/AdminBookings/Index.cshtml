@@ -1,0 +1,177 @@
+@model IEnumerable<ParkEase.Models.ParkingBooking>
+@{
+    ViewData["Title"] = "All Parking Reservations";
+}
+
+<div class="container-fluid px-lg-4 py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-controller="Admin" asp-action="Index">Admin</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reservations</li>
+                </ol>
+            </nav>
+            <h1 class="h2 fw-bold font-heading mb-0">Customer Reservations &amp; Gate Control</h1>
+            <p class="text-muted small mb-0">Search, review, confirm, and record vehicle check-ins and check-outs.</p>
+        </div>
+    </div>
+
+    <!-- Filter & Search Bar -->
+    <div class="card-custom p-3 mb-4">
+        <form asp-action="Index" method="get">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label small fw-semibold text-muted">Search Query</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light"><i class="bi bi-search text-primary"></i></span>
+                        <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by Booking Ref, Vehicle Plate, or Customer Name..." />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold text-muted">Filter by Status</label>
+                    <select name="status" class="form-select form-select-sm bg-light">
+                        <option value="">All Statuses</option>
+                        <option value="Confirmed" selected="@(ViewBag.Status == "Confirmed" ? "selected" : null)">Confirmed</option>
+                        <option value="Completed" selected="@(ViewBag.Status == "Completed" ? "selected" : null)">Completed</option>
+                        <option value="Cancelled" selected="@(ViewBag.Status == "Cancelled" ? "selected" : null)">Cancelled</option>
+                        <option value="Pending" selected="@(ViewBag.Status == "Pending" ? "selected" : null)">Pending</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label small fw-semibold text-muted">Reservation Date</label>
+                    <input name="date" type="date" value="@ViewBag.Date" class="form-control form-control-sm bg-light" />
+                </div>
+                <div class="col-md-2 d-flex gap-1">
+                    <button type="submit" class="btn btn-primary btn-sm flex-fill">
+                        <i class="bi bi-funnel-fill me-1"></i> Filter
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm" title="Clear Filters">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Reservations Table -->
+    <div class="card-custom">
+        <div class="card-custom-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="p-5 text-center text-muted">
+                    <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                    No reservations matched your search criteria.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Booking Ref</th>
+                                <th>Customer</th>
+                                <th>Vehicle Details</th>
+                                <th>Facility &amp; Stall</th>
+                                <th>Scheduled Time</th>
+                                <th>Fee / Final Charge</th>
+                                <th>Status</th>
+                                <th>Gate Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var b in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@b.Id" class="fw-bold text-primary font-monospace text-decoration-none">
+                                            @b.BookingReference
+                                        </a>
+                                        <div class="text-muted small">@b.CreatedAt.ToString("dd MMM yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-dark">@(b.User?.FullName ?? "Customer")</div>
+                                        <div class="text-muted small text-truncate" style="max-width: 160px;">@b.User?.Email</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">@b.VehicleType</span>
+                                        <div class="font-monospace small fw-bold">@b.VehicleNumber</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">Slot @b.ParkingSlot?.SlotNumber</div>
+                                        <div class="text-muted small text-truncate" style="max-width: 150px;">
+                                            @b.ParkingSlot?.ParkingLocation?.Name
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="small fw-semibold">@b.StartDateTime.ToString("dd MMM, hh:mm tt")</div>
+                                        <div class="text-muted small">to @b.EndDateTime.ToString("dd MMM, hh:mm tt")</div>
+                                    </td>
+                                    <td>
+                                        @if (b.Session?.FinalFee.HasValue == true)
+                                        {
+                                            <span class="fw-bold text-success">₹@b.Session.FinalFee.Value.ToString("N2")</span>
+                                            <span class="badge bg-success-subtle text-success small">Final</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="fw-bold text-dark">₹@b.EstimatedFee.ToString("N2")</span>
+                                            <span class="badge bg-light text-muted small">Est.</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (b.BookingStatus == "Confirmed")
+                                        {
+                                            <span class="status-badge available"><i class="bi bi-check-circle"></i> Confirmed</span>
+                                        }
+                                        else if (b.BookingStatus == "Completed")
+                                        {
+                                            <span class="status-badge completed"><i class="bi bi-flag-fill"></i> Completed</span>
+                                        }
+                                        else if (b.BookingStatus == "Cancelled")
+                                        {
+                                            <span class="status-badge cancelled"><i class="bi bi-x-circle"></i> Cancelled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge pending">@b.BookingStatus</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (b.Session != null)
+                                        {
+                                            if (b.Session.Status == "CheckedIn")
+                                            {
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                                    <i class="bi bi-box-arrow-in-right me-1"></i> On-Site
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary-subtle text-secondary border">
+                                                    <i class="bi bi-box-arrow-right me-1"></i> Departed
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Pending Gate</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-gear-fill me-1"></i> Manage
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

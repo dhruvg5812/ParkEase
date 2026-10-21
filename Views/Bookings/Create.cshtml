@@ -1,0 +1,139 @@
+@model ParkEase.ViewModels.BookingCreateViewModel
+@{
+    ViewData["Title"] = $"Reserve Slot {Model.SlotNumber}";
+}
+
+<div class="container py-4">
+    <div class="row g-4 justify-content-center">
+        <!-- Left: Booking Form -->
+        <div class="col-lg-7">
+            <div class="card-custom p-4 p-md-5">
+                <div class="mb-4 pb-3 border-bottom">
+                    <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-1">Step 2 of 2</span>
+                    <h2 class="fw-bold font-heading mb-1">Complete Your Reservation</h2>
+                    <p class="text-muted small mb-0">Fill in your vehicle details and select parking duration.</p>
+                </div>
+
+                <form asp-controller="Bookings" asp-action="Create" method="post" id="bookingForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ParkingSlotId" />
+                    <input type="hidden" id="slotHourlyRate" value="@Model.HourlyRate" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 small mb-3"></div>
+
+                    <!-- Slot Summary Info Box -->
+                    <div class="p-3 bg-light rounded-3 border mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-sm-6">
+                                <div class="text-muted small">Selected Stall:</div>
+                                <div class="fs-4 fw-bold text-dark font-heading">
+                                    Slot @Model.SlotNumber
+                                    <span class="badge bg-dark fs-6 ms-1">@Model.VehicleType</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 text-sm-end mt-2 mt-sm-0">
+                                <div class="text-muted small">Location:</div>
+                                <div class="fw-semibold text-truncate">@Model.LocationName</div>
+                                <div class="text-muted small text-truncate">@Model.LocationAddress</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Number Input -->
+                    <div class="mb-3">
+                        <label asp-for="VehicleNumber" class="form-label small fw-semibold text-muted"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-card-heading text-primary"></i></span>
+                            <input asp-for="VehicleNumber" class="form-control text-uppercase" placeholder="e.g. MH 12 AB 1234" required />
+                        </div>
+                        <span asp-validation-for="VehicleNumber" class="text-danger small"></span>
+                        <div class="form-text small">Enter your vehicle's exact registration number for automated barrier recognition.</div>
+                    </div>
+
+                    <!-- Time Selection Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="StartDateTime" class="form-label small fw-semibold text-muted"></label>
+                            <input asp-for="StartDateTime" id="bookingStartTime" type="datetime-local" class="form-control"
+                                   value="@Model.StartDateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                            <span asp-validation-for="StartDateTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EndDateTime" class="form-label small fw-semibold text-muted"></label>
+                            <input asp-for="EndDateTime" id="bookingEndTime" type="datetime-local" class="form-control"
+                                   value="@Model.EndDateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+                            <span asp-validation-for="EndDateTime" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Cancellation & Concurrency Notice -->
+                    <div class="p-3 bg-info-subtle border border-info-subtle rounded-3 small mb-4 text-secondary">
+                        <div class="d-flex gap-2">
+                            <i class="bi bi-shield-check text-info fs-5 flex-shrink-0"></i>
+                            <div>
+                                <strong class="text-dark">Guaranteed Slot Reservation:</strong>
+                                This slot is locked using atomic database transactions. You can cancel free of charge anytime before the start time.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-controller="Parking" asp-action="Index" class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary flex-fill py-2 fs-6 shadow-sm">
+                            <i class="bi bi-check-circle-fill me-2"></i> Confirm &amp; Reserve Slot
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right: Live Pricing Card -->
+        <div class="col-lg-5">
+            <div class="card-custom p-4 sticky-top" style="top: 100px;">
+                <h5 class="fw-bold font-heading mb-3 pb-2 border-bottom">
+                    <i class="bi bi-receipt text-primary me-2"></i>Fare Summary
+                </h5>
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small">Hourly Base Rate:</span>
+                    <span class="fw-semibold">₹@Model.HourlyRate.ToString("N2")/hr</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small">Duration:</span>
+                    <span class="fw-semibold small" id="displayDurationText">Calculating...</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted small">Billable Hours (Rounded up):</span>
+                    <span class="badge bg-primary text-white" id="displayBillableHours">@Model.BillableHours hrs</span>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted small d-block">Estimated Total Fee:</span>
+                            <small class="text-secondary" style="font-size: 0.75rem;">(Billed upon check-out)</small>
+                        </div>
+                        <div class="fs-2 fw-bold text-primary font-heading" id="displayEstimatedFee">
+                            ₹@Model.EstimatedFee.ToString("N2")
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-muted text-uppercase small mb-2">How Billing Works</h6>
+                <ul class="text-muted small ps-3 mb-0">
+                    <li>Any partial hour is rounded up to the next billable hour.</li>
+                    <li>The applicable rate is locked at booking time and will not change.</li>
+                    <li>Check-in is recorded digitally by the parking attendant upon entry.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

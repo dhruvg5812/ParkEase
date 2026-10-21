@@ -1,0 +1,246 @@
+@model ParkEase.ViewModels.ParkingSearchViewModel
+@{
+    ViewData["Title"] = "Smart Parking Reservation System";
+    var featuredLocations = ViewBag.FeaturedLocations as List<ParkEase.Models.ParkingLocation> ?? new List<ParkEase.Models.ParkingLocation>();
+}
+
+<div class="container mt-2">
+    <!-- Hero Section with Search Form -->
+    <div class="hero-wrapper">
+        <div class="row align-items-center g-4 position-relative" style="z-index: 2;">
+            <div class="col-lg-7">
+                <span class="hero-badge">
+                    <i class="bi bi-shield-check text-info"></i> Zero Overbooking Guarantee
+                </span>
+                <h1 class="display-4 fw-bold text-white mb-3">
+                    Find Your Perfect <br>
+                    <span style="background: linear-gradient(90deg, #60a5fa, #2dd4bf); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Parking Spot</span>
+                </h1>
+                <p class="lead text-light opacity-90 mb-4 pe-lg-4">
+                    Say goodbye to endless circling. Search live slots, compare hourly rates, and reserve your secure parking space in seconds across multi-level hubs and metro stations.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#searchWidget" class="btn btn-teal btn-lg px-4 shadow">
+                        <i class="bi bi-search me-2"></i> Find Available Slots
+                    </a>
+                    <a asp-controller="Home" asp-action="About" class="btn btn-outline-light btn-lg px-4">
+                        <i class="bi bi-play-circle me-2"></i> How It Works
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-5" id="searchWidget">
+                <div class="hero-search-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                        <h5 class="fw-bold mb-0 text-dark font-heading">
+                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>Quick Slot Search
+                        </h5>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">Real-Time</span>
+                    </div>
+
+                    <form asp-controller="Parking" asp-action="Index" method="get">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-muted">Parking Location</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-building text-primary"></i></span>
+                                <select asp-for="LocationId" asp-items="Model.Locations" class="form-select border-start-0 bg-light">
+                                    <option value="">All Parking Locations</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-semibold text-muted">Vehicle Type</label>
+                                <select asp-for="VehicleType" class="form-select bg-light">
+                                    <option value="">All Types</option>
+                                    <option value="Car">Car (4-Wheeler)</option>
+                                    <option value="Bike">Bike (2-Wheeler)</option>
+                                    <option value="SUV">SUV (Large)</option>
+                                    <option value="EV">EV (Charging)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-semibold text-muted">Date</label>
+                                <input asp-for="SearchDate" type="date" class="form-control bg-light" />
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <label class="form-label small fw-semibold text-muted">Start Time</label>
+                                <input asp-for="StartTime" type="time" class="form-control bg-light" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-semibold text-muted">End Time</label>
+                                <input asp-for="EndTime" type="time" class="form-control bg-light" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fs-6 shadow-sm">
+                            <i class="bi bi-funnel-fill me-2"></i> Search Parking Slots
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-grid-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@(ViewBag.TotalSlots ?? 17)</div>
+                        <div class="stat-label">Total Slots</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon success">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@(ViewBag.AvailableSlots ?? 14)</div>
+                        <div class="stat-label">Available Now</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon teal">
+                        <i class="bi bi-building-check"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">@(ViewBag.TotalLocations ?? 4)</div>
+                        <div class="stat-label">Prime Locations</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon warning">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+                    <div>
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Automated Entry</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Locations -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <span class="text-primary fw-bold text-uppercase small tracking-wide">City Hubs</span>
+                <h2 class="fw-bold mb-1 font-heading">Featured Parking Facilities</h2>
+                <p class="text-muted mb-0">Multi-level covered complexes with automated license plate scanners and surveillance.</p>
+            </div>
+            <a asp-controller="Parking" asp-action="Index" class="btn btn-outline-primary btn-sm">
+                View All Slots <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var loc in featuredLocations)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-custom">
+                        <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1">
+                                <i class="bi bi-geo-alt-fill me-1"></i> Verified Hub
+                            </span>
+                            <span class="badge bg-success-subtle text-success">
+                                @loc.ParkingSlots.Count(s => s.Status == "Available") / @loc.ParkingSlots.Count Available
+                            </span>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-column">
+                            <h5 class="fw-bold mb-2 font-heading">@loc.Name</h5>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-pin-map text-danger me-1"></i> @loc.Address
+                            </p>
+                            <p class="text-secondary small mb-4 flex-grow-1">
+                                @(loc.Description ?? "High security smart facility equipped with sensor navigation and EV charging.")
+                            </p>
+                            <a asp-controller="Parking" asp-action="Index" asp-route-locationId="@loc.Id" class="btn btn-outline-primary btn-sm w-100 fw-semibold">
+                                Browse Slots Here
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="card-custom p-4 p-md-5 mb-5 bg-white">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-primary fw-bold text-uppercase small">Simple & Effortless</span>
+            <h2 class="fw-bold font-heading mb-2">How ParkEase Works in 4 Simple Steps</h2>
+            <p class="text-muted">Effortlessly secure your parking before you leave your doorstep.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="step-num">1</div>
+                    <h5 class="fw-bold font-heading mb-2">Select Hub & Slot</h5>
+                    <p class="text-muted small mb-0">Browse through available bays by location, vehicle type (Car, Bike, SUV, EV), and exact time slot.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="step-num">2</div>
+                    <h5 class="fw-bold font-heading mb-2">Reserve In Real-Time</h5>
+                    <p class="text-muted small mb-0">Transparent billing rounded to billable hours. Server-side concurrency locks prevent double-booking.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="step-num">3</div>
+                    <h5 class="fw-bold font-heading mb-2">Contactless Check-In</h5>
+                    <p class="text-muted small mb-0">Arrive at the barrier and flash your unique digital booking reference. System timestamps arrival.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="step-num">4</div>
+                    <h5 class="fw-bold font-heading mb-2">Park & Depart</h5>
+                    <p class="text-muted small mb-0">Enjoy peace of mind. Flexible check-out calculates final billing based on recorded session time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action Banner -->
+    <div class="p-4 p-md-5 rounded-4 text-white text-center position-relative overflow-hidden mb-4" style="background: linear-gradient(135deg, #1d4ed8, #0d9488);">
+        <div class="position-relative" style="z-index: 2;">
+            <h2 class="display-6 fw-bold mb-3 font-heading">Ready to Experience Hassle-Free Parking?</h2>
+            <p class="lead mb-4 opacity-90 mx-auto" style="max-width: 600px;">
+                Join thousands of commuters who save 20 minutes on every trip with ParkEase reservation.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a asp-controller="Parking" asp-action="Index" class="btn btn-light btn-lg px-4 text-primary fw-bold shadow">
+                    Book Parking Now
+                </a>
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+                    Create Free Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

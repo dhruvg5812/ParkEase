@@ -1,0 +1,160 @@
+@model ParkEase.ViewModels.ParkingSearchViewModel
+@{
+    ViewData["Title"] = "Browse Parking Slots";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-1">Live Bay Status</span>
+            <h1 class="h2 fw-bold font-heading mb-0">Browse &amp; Reserve Parking Slots</h1>
+            <p class="text-muted small mb-0">Real-time slot availability checked against all active reservations.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-success-subtle text-success p-2 px-3 rounded-3 border">
+                <i class="bi bi-circle-fill me-1 small"></i> @Model.AvailableCount Slots Available
+            </span>
+            <span class="badge bg-secondary-subtle text-secondary p-2 px-3 rounded-3 border">
+                Total: @Model.TotalFound
+            </span>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card-custom p-3 p-md-4 mb-4">
+        <form asp-controller="Parking" asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small fw-semibold text-muted">Hub Location</label>
+                    <select asp-for="LocationId" asp-items="Model.Locations" class="form-select bg-light">
+                        <option value="">All Locations</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label class="form-label small fw-semibold text-muted">Vehicle Type</label>
+                    <select asp-for="VehicleType" class="form-select bg-light">
+                        <option value="">All Types</option>
+                        <option value="Car">Car</option>
+                        <option value="Bike">Bike</option>
+                        <option value="SUV">SUV</option>
+                        <option value="EV">EV</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <label class="form-label small fw-semibold text-muted">Date</label>
+                    <input asp-for="SearchDate" type="date" class="form-control bg-light" />
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <label class="form-label small fw-semibold text-muted">Start Time</label>
+                    <input asp-for="StartTime" type="time" class="form-control bg-light" />
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <label class="form-label small fw-semibold text-muted">End Time</label>
+                    <input asp-for="EndTime" type="time" class="form-control bg-light" />
+                </div>
+                <div class="col-lg-1 col-12">
+                    <button type="submit" class="btn btn-primary w-100" title="Apply Filters">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Status Legend -->
+    <div class="d-flex flex-wrap align-items-center gap-3 mb-4 p-2 px-3 bg-white rounded-3 border small">
+        <span class="text-muted fw-bold">Legend:</span>
+        <span class="status-badge available"><i class="bi bi-check-circle-fill"></i> Available for Selected Time</span>
+        <span class="status-badge reserved"><i class="bi bi-clock-fill"></i> Reserved / Conflict</span>
+        <span class="status-badge maintenance"><i class="bi bi-tools"></i> Under Maintenance</span>
+    </div>
+
+    <!-- Slots Grid -->
+    @if (!Model.Slots.Any())
+    {
+        <div class="card-custom p-5 text-center my-4">
+            <i class="bi bi-p-square text-muted display-4 mb-3 d-block"></i>
+            <h4 class="fw-bold font-heading mb-1">No Parking Slots Found</h4>
+            <p class="text-muted mb-3">No slots match your selected filters. Try broadening your location or vehicle type selection.</p>
+            <a asp-controller="Parking" asp-action="Index" class="btn btn-outline-primary px-4 mx-auto">Reset Filters</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var slot in Model.Slots)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="slot-card">
+                        <div class="slot-header">
+                            <div class="slot-code">
+                                <span class="badge bg-dark text-white rounded-3 px-2 py-1">@slot.SlotNumber</span>
+                                <span class="rate-tag">₹@slot.HourlyRate.ToString("N0")<small>/hr</small></span>
+                            </div>
+                            <div>
+                                @if (slot.Status == "Maintenance")
+                                {
+                                    <span class="status-badge maintenance"><i class="bi bi-tools"></i> Maintenance</span>
+                                }
+                                else if (slot.Status == "Unavailable")
+                                {
+                                    <span class="status-badge unavailable"><i class="bi bi-x-circle"></i> Closed</span>
+                                }
+                                else if (!slot.IsAvailableForSearch)
+                                {
+                                    <span class="status-badge reserved"><i class="bi bi-calendar-x"></i> Reserved</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge available"><i class="bi bi-check2"></i> Available</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6 class="fw-bold mb-1 font-heading text-dark text-truncate">@slot.LocationName</h6>
+                            <p class="text-muted small mb-2 text-truncate">
+                                <i class="bi bi-geo-alt text-danger me-1"></i> @slot.LocationAddress
+                            </p>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-light text-dark border">
+                                    @if (slot.VehicleType == "Car") { <i class="bi bi-car-front-fill text-primary me-1"></i> }
+                                    else if (slot.VehicleType == "Bike") { <i class="bi bi-bicycle text-success me-1"></i> }
+                                    else if (slot.VehicleType == "SUV") { <i class="bi bi-truck-front-fill text-warning me-1"></i> }
+                                    else if (slot.VehicleType == "EV") { <i class="bi bi-lightning-charge-fill text-info me-1"></i> }
+                                    @slot.VehicleType
+                                </span>
+                                @if (slot.VehicleType == "EV")
+                                {
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle small">Fast Charging</span>
+                                }
+                            </div>
+                            <p class="text-secondary small mb-0 text-truncate" title="@slot.Description">
+                                @(slot.Description ?? "Standard parking stall with CCTV coverage.")
+                            </p>
+                        </div>
+
+                        <div class="mt-auto pt-3 border-top d-flex gap-2">
+                            <a asp-controller="Parking" asp-action="Details" asp-route-id="@slot.Id" class="btn btn-outline-secondary btn-sm flex-fill">
+                                Details
+                            </a>
+                            @if (slot.Status == "Available" && slot.IsAvailableForSearch)
+                            {
+                                <a asp-controller="Bookings" asp-action="Create" asp-route-slotId="@slot.Id" class="btn btn-primary btn-sm flex-fill shadow-sm">
+                                    <i class="bi bi-bookmark-check me-1"></i> Reserve
+                                </a>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-secondary btn-sm flex-fill opacity-50" disabled>
+                                    Unavailable
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

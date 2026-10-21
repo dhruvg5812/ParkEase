@@ -1,0 +1,86 @@
+@model ParkEase.Models.ParkingSlot
+@{
+    ViewData["Title"] = $"Edit Slot {Model.SlotNumber}";
+    var locations = ViewBag.Locations as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card-custom p-4 p-md-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a asp-action="Index">Parking Slots</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Edit Slot</li>
+                    </ol>
+                </nav>
+                <h3 class="fw-bold font-heading mb-4 pb-2 border-bottom">Edit Parking Slot @Model.SlotNumber</h3>
+
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="ParkingLocationId" class="form-label small fw-semibold text-muted">Parking Facility</label>
+                        <select asp-for="ParkingLocationId" asp-items="locations" class="form-select" required></select>
+                        <span asp-validation-for="ParkingLocationId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="SlotNumber" class="form-label small fw-semibold text-muted"></label>
+                            <input asp-for="SlotNumber" class="form-control text-uppercase" required />
+                            <span asp-validation-for="SlotNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="VehicleType" class="form-label small fw-semibold text-muted"></label>
+                            <select asp-for="VehicleType" class="form-select">
+                                <option value="Car">Car (4-Wheeler)</option>
+                                <option value="Bike">Bike (2-Wheeler)</option>
+                                <option value="SUV">SUV (Large)</option>
+                                <option value="EV">EV (Charging)</option>
+                            </select>
+                            <span asp-validation-for="VehicleType" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="HourlyRate" class="form-label small fw-semibold text-muted"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input asp-for="HourlyRate" type="number" step="0.50" min="0" class="form-control" />
+                            </div>
+                            <span asp-validation-for="HourlyRate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label small fw-semibold text-muted"></label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="Available">Available</option>
+                                <option value="Unavailable">Unavailable</option>
+                                <option value="Maintenance">Maintenance</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label small fw-semibold text-muted"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm">Update Slot</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
