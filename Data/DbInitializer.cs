@@ -15,7 +15,14 @@ namespace ParkEase.Data
             var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("DbInitializer");
 
             // Apply migrations / ensure database is created
-            await context.Database.MigrateAsync();
+            if (context.Database.IsSqlite())
+            {
+                await context.Database.EnsureCreatedAsync();
+            }
+            else
+            {
+                await context.Database.MigrateAsync();
+            }
 
             // 1. Seed Roles
             string[] roles = { "Admin", "Customer" };

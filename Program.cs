@@ -6,20 +6,51 @@ using ParkEase.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Connection String
+// Provider and Connection String
+var providerSetting = builder.Configuration["DatabaseProvider"] ?? "Auto";
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=localhost;Port=3306;Database=parkease_db;User=root;Password=;CharSet=utf8mb4;";
+var sqliteConnectionString = builder.Configuration.GetConnectionString("SqliteConnection")
+    ?? "Data Source=parkease.db";
 
-// 1. Add DbContext with MySQL Pomelo
+bool useMySql = false;
+if (providerSetting.Equals("MySql", StringComparison.OrdinalIgnoreCase))
+{
+    useMySql = true;
+}
+else if (providerSetting.Equals("Sqlite", StringComparison.OrdinalIgnoreCase))
+{
+    useMySql = false;
+}
+else
+{
+    useMySql = CanConnectToMySql(connectionString);
+}
+
+// 1. Add DbContext with MySQL or SQLite fallback
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mysqlOptions =>
+    if (useMySql)
     {
-        mysqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 3,
-            maxRetryDelay: TimeSpan.FromSeconds(5),
-            errorNumbersToAdd: null);
-    });
+        try
+        {
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mysqlOptions =>
+            {
+                mysqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorNumbersToAdd: null);
+            });
+        }
+        catch
+        {
+            options.UseSqlite(sqliteConnectionString);
+        }
+    }
+    else
+    {
+        options.UseSqlite(sqliteConnectionString);
+    }
 });
 
 // 2. Add ASP.NET Core Identity with Roles
@@ -102,3 +133,25 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+static bool CanConnectToMySql(string connectionString)
+{
+    try
+    {
+        var csb = new MySqlConnector.MySqlConnectionStringBuilder(connectionString);
+        using var client = new System.Net.Sockets.TcpClient();
+        var result = client.BeginConnect(csb.Server, (int)csb.Port, null, null);
+        var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds(1000));
+        if (!success)
+        {
+            return false;
+        }
+        client.EndConnect(result);
+        return true;
+    }
+    catch
+    {
+        return false;
+    }
+}
+
