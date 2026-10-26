@@ -26,6 +26,46 @@ ParkEase solves real-world urban parking congestion by allowing motorists to loc
 
 ---
 
+## 📸 Application Screenshots Gallery
+
+### 🚗 Customer Portal
+
+| Landing Page | Live Slot Discovery |
+|:---:|:---:|
+| ![Landing Page](screenshots/01_landing_page.png) | ![Slot Discovery](screenshots/02_slot_discovery.png) |
+| *Modern hero section & featured city hubs* | *Filter bays by vehicle category & time window* |
+
+| Customer Dashboard | Digital Parking Permit |
+|:---:|:---:|
+| ![Customer Dashboard](screenshots/04_customer_dashboard.png) | ![Digital Parking Permit](screenshots/06_digital_permit.png) |
+| *Active trips, on-site status & quick actions* | *Print-ready digital pass with QR code & booking ref* |
+
+| Booking Reservation Modal | My Bookings History |
+|:---:|:---:|
+| ![Booking Form](screenshots/07_booking_reservation.png) | ![My Bookings](screenshots/05_my_bookings.png) |
+| *Transparent real-time fare calculation* | *Trip history with self-service cancellation* |
+
+### 🛡️ Administrator Console
+
+| Live 8-Metric KPI Dashboard | Barrier Check-In & Check-Out |
+|:---:|:---:|
+| ![Admin Dashboard](screenshots/08_admin_dashboard.png) | ![Barrier Control](screenshots/10_barrier_checkin_checkout.png) |
+| *Real-time occupancy, revenue & session analytics* | *Barrier attendant check-in/out timestamp logging* |
+
+| Parking Bay Inventory Management | Multi-Level Facility Hubs |
+|:---:|:---:|
+| ![Slot Management](screenshots/09_admin_slots.png) | ![Hub Management](screenshots/11_admin_hubs.png) |
+| *Configure rates and toggle Maintenance / Available states* | *Manage parking locations, addresses & capacities* |
+
+### 🔐 Authentication & Support
+
+| Quick-Fill Demo Login | Motorist Contact & Inquiries |
+|:---:|:---:|
+| ![Login Page](screenshots/03_login_page.png) | ![Contact Page](screenshots/12_contact_page.png) |
+| *1-Click Demo login buttons for Admin & Customer* | *Integrated inquiry and customer feedback form* |
+
+---
+
 ## 🛠️ Technology Stack
 
 | Component | Technology |

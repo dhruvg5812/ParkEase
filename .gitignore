@@ -1,0 +1,33 @@
+## .NET Core / ASP.NET Core
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider & JetBrains
+.idea/
+*.sln.iml
+
+## VS Code
+.vscode/
+
+## SQLite local database files
+*.db
+*.db-shm
+*.db-wal
+
+## OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Node / NPM
+node_modules/
+npm-debug.log*
